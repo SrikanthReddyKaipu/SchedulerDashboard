@@ -1,20 +1,89 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
+<div class="nav-bar text">
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <img src="assets/images/Copart.png" style="width:150px;height:50px;">
+            </div>
+        </div>
+    </nav>
 </div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
+<toaster-container [toasterconfig]="config1"></toaster-container>
+<div class="panel panel-primary" style="margin-left: 20px;margin-right: 20px">
+    <div class="panel-heading">Adhoc Scheduler</div>
+    <div class="panel-body table-responsive mytable" style="min-height:300px;max-height: 500px">
+        <div>
+             <!--<select class="form-control" (change)="onExtractIdSelect($event.target.value)">
+                             <option disabled>Select Extract Name</option>
+                             <option *ngFor="let item of adhocData" value={{item.extract_nm}}>{{item.extract_nm}}</option> 
+                        </select>-->
+                        <p-dropdown [options]="extractNameList" placeholder="Please Select Extract Name" [(ngModel)]="selectedExtract_nm" [style]="{'width':'400px'}"
+                            [filter]="true" (onChange)="onExtractIdSelect($event.value)">
+                            <ng-template let-nameList pTemplate="item">
+                                <div class="ui-helper-clearfix" style="position: relative;">
+                                    <div style="font-size:14px;margin-top:4px">{{nameList.label}}</div>
+                                </div>
+                            </ng-template>
+                        </p-dropdown>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Extract Sql</th>
+                    <th>Distribution List</th>
+                    <th style="min-width: 118px">Run Frequency</th>
+                    <th style="min-width: 158px">Last Run Date</th>
+                    <th style="min-width: 158px">Next Run Date</th>
+                    <th>Edit</th>
+                </tr>
 
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of selectedData let i = index;">
+                    <td>{{data.extract_sql}}</td>
+                    <td>{{data.dist_list}}</td>
+                    <td>{{data.run_freq}}</td>
+                    <td>{{data.last_run_dt}}</td>
+                    <td>{{data.next_run_dt}}</td>
+                    <button (click)="editAdhocList(data,i)" type="button" class="btn btn-default btn"><i class="glyphicon glyphicon-pencil"></i></button>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <div style="display:none" class="modal fade" id="AdhocSchedulerDashboardFormModal" #AdhocSchedulerDashboardFormModal>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="btn-actions">
+                        <button class="btn btn-dgray" data-dismiss="modal" (click)="closeModal()">&times;</button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <form novalidate (ngSubmit)="onSubmit(editForm)" [formGroup]="editForm">
+                        <div class="form-group">
+                            <label>Extract Id</label>
+                            <input disabled type="text" class="form-control" formControlName="extract_id">
+                        </div>
+                        <div class="form-group">
+                            <label>Extract Name</label>
+                            <input type="text" class="form-control" formControlName="extract_nm">
+                            <span class="error" *ngIf="editForm.get('extract_nm').touched && editForm.get('extract_nm').hasError('required')">
+									Extract Name is Required
+                        </span>
+                        </div>
+                        <div class="form-group">
+                            <label>Distribution List</label>
+                            <input type="text" class="form-control" formControlName="dist_list">
+                            <span class="error" *ngIf="editForm.get('dist_list').touched && editForm.get('dist_list').hasError('required')">
+									Distribution List is Required
+                        </span>
+                        </div>
+                        <button type="submit" [disabled]="editForm.invalid || loading" class="btn btn-default">Save & Proceed</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="display:none" #AdhocSchedulerDashboardFormBackDrop id="AdhocSchedulerDashboardFormBackDrop" class="modal-backdrop fade"></div>
+</div>

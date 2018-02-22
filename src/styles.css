@@ -1,1 +1,41 @@
 /* You can add global styles to this file, and also import other style files */
+.ui-state-default {
+    border: 1px solid #337ab7 !important;
+    background-color: white !important;
+    color: black !important;
+}
+
+.ui-widget-content {
+    border: 1px solid #337ab7 !important;
+    background: #337ab7 !important;
+    color: #fffefe !important;
+}
+
+.ui-corner-right {
+    background-color: #337ab7  !important;
+}
+    
+.ui-dropdown .ui-dropdown-trigger .fa {
+    color: white !important;
+}
+
+.ui-dropdown-panel .ui-dropdown-filter-container .fa {
+    top: .9em !important;
+    color: black !important;
+}
+.error {
+    color: #f44336
+}
+
+.navbar-inverse {
+    background-color: #337ab7 !important;
+    border-color: #337ab7 !important;
+}
+
+.reload{
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    margin: 15% 0% 0% 49%;
+    display: block;
+}
